@@ -3,7 +3,6 @@ package de.smartsteuer.metricsdemo.tax
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
-import de.smartsteuer.metricsdemo.metrics.fake.PrometheusTestDataGenerator
 import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.Gauge
 import io.micrometer.core.instrument.MeterRegistry
@@ -21,8 +20,7 @@ class CachingTaxComputer(private val taxComputer:                 TaxComputer,
                          private val taxComputerCacheMissCounter: Counter,
                          @Value("\${metrics-demo.tax-computer.cache.max-size:100}")
                          private val cacheSize:                   Long,
-                         meterRegistry:               MeterRegistry,
-                         prometheusTestDataGenerator: PrometheusTestDataGenerator?) {
+                         meterRegistry: MeterRegistry) {
 
   private val cache: LoadingCache<Euro, TaxComputationResult> = CacheBuilder.newBuilder()
     .maximumSize(cacheSize)
@@ -34,9 +32,7 @@ class CachingTaxComputer(private val taxComputer:                 TaxComputer,
     })
 
   init {
-    val taxComputerCacheUtilizationSupplier: Supplier<Number> =
-      prometheusTestDataGenerator?.fakeTaxComputerCacheHitsSupplier ?: Supplier { cache.size().toDouble() / cacheSize * 100 }
-
+    val taxComputerCacheUtilizationSupplier = Supplier<Number> { cache.size().toDouble() / cacheSize * 100 }
     Gauge
       .builder("metrics_demo.tax_computer_cache.cache_utilization", taxComputerCacheUtilizationSupplier)
       .description("shows tax computer cache utilization in percent")
