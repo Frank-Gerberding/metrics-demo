@@ -1,0 +1,88 @@
+#-------------------------------------------------------------------------------
+# default settings
+# these settings are used, if not overridden by activating other profiles
+#-------------------------------------------------------------------------------
+
+server:
+  port:              8100
+
+spring:
+  application:
+    name:            "metrics-demo"
+
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled:         true
+        descriptions:    true           # set this to "false" to remove descriptions from output
+    tags:
+      environment:       "development"  # common tag for all metrics
+    web:
+      server:
+        request:
+          autotime:
+            enabled:     true           # enables the instrumentation of requests handled by Spring MVC
+            percentiles-histogram: true
+    distribution:
+      percentiles-histogram:
+        all:             true           # enables percentiles histograms for all endpoints
+  endpoints:
+    web:
+      exposure:
+        include:         metrics, prometheus
+  endpoint:
+    health:
+      show-details:                 when_authorized       # one of "always"/"never"/"when-authorized"
+
+logging:
+  level:                     # specification of log levels
+    ROOT:            WARN    # default log level
+
+metrics-demo:
+  tax-computer:
+    cache:
+      max-size:     100
+
+#-------------------------------------------------------------------------------
+# development Profile
+# this profile should be used for local development
+#-------------------------------------------------------------------------------
+---
+spring:
+  config:
+    activate:
+      on-profile: development
+
+logging:
+  level:                     # specification of log levels
+    ROOT:            INFO    # default log level
+    de.smartsteuer:  DEBUG   # default log level for smartsteuer classes
+
+#-------------------------------------------------------------------------------
+# generate-prometheus-test-data Profile
+# this profile should be used during development of grafana dashboards
+#-------------------------------------------------------------------------------
+---
+spring:
+  config:
+    activate:
+      on-profile: generate-prometheus-test-data
+
+#-------------------------------------------------------------------------------
+# production settings
+# these settings are used to override default settings during production
+#-------------------------------------------------------------------------------
+---
+spring:
+  config:
+    activate:
+      on-profile: production
+
+management:
+  metrics:
+    export:
+      prometheus:
+        descriptions:    false          # remove descriptions from output
+    tags:
+      environment:       "production"   # common tag for all metrics

@@ -1,0 +1,13 @@
+:root {
+    --bs-body-color: #fff;
+    --bs-body-bg: #0986d0;
+    --bs-primary: #d95700;
+}
+
+.btn-primary {
+  background-color: var(--bs-primary);
+}
+
+.btn-primary:hover {
+    background-color: #cc5200;
+}

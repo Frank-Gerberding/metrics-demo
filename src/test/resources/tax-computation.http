@@ -1,0 +1,19 @@
+
+GET {{base_url}}/computeTaxRate?taxableIncome=20000
+
+###
+
+GET {{base_url}}/actuator
+
+###
+
+GET {{base_url}}/actuator/metrics
+
+###
+
+GET {{base_url}}/actuator/prometheus
+
+###
+
+POST {{base_url}}/cache/clear
+
