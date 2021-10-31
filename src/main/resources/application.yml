@@ -9,6 +9,13 @@ server:
 spring:
   application:
     name:            "metrics-demo"
+  cloud:
+    consul:
+      config:
+        import-check:
+          enabled:   false
+      discovery:
+        instanceId:  ${spring.application.name}:${random.value}
 
 management:
   metrics:
@@ -18,22 +25,23 @@ management:
         descriptions:    true           # set this to "false" to remove descriptions from output
     tags:
       environment:       "development"  # common tag for all metrics
+      application:       "${spring.application.name}"
     web:
       server:
         request:
           autotime:
             enabled:     true           # enables the instrumentation of requests handled by Spring MVC
-            percentiles-histogram: true
+            percentiles-histogram: false
     distribution:
       percentiles-histogram:
         all:             true           # enables percentiles histograms for all endpoints
   endpoints:
     web:
       exposure:
-        include:         metrics, prometheus
+        include:         metrics, prometheus, health
   endpoint:
     health:
-      show-details:                 when_authorized       # one of "always"/"never"/"when-authorized"
+      show-details:      when_authorized       # one of "always"/"never"/"when-authorized"
 
 logging:
   level:                     # specification of log levels
@@ -52,22 +60,19 @@ metrics-demo:
 spring:
   config:
     activate:
-      on-profile: development
-
+      on-profile:    development
+  cloud:
+    consul:
+      discovery:
+        tags:
+          - development
+          - urlprefix-/
+          - urlprefix-/css
+          - urlprefix-/js
 logging:
   level:                     # specification of log levels
     ROOT:            INFO    # default log level
     de.smartsteuer:  DEBUG   # default log level for smartsteuer classes
-
-#-------------------------------------------------------------------------------
-# generate-prometheus-test-data Profile
-# this profile should be used during development of grafana dashboards
-#-------------------------------------------------------------------------------
----
-spring:
-  config:
-    activate:
-      on-profile: generate-prometheus-test-data
 
 #-------------------------------------------------------------------------------
 # production settings
@@ -78,6 +83,14 @@ spring:
   config:
     activate:
       on-profile: production
+  cloud:
+    consul:
+      discovery:
+        tags:
+          - production
+          - urlprefix-/
+          - urlprefix-/css
+          - urlprefix-/js
 
 management:
   metrics:

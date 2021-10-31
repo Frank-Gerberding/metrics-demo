@@ -22,6 +22,16 @@ class CachingTaxComputer(private val taxComputer:                 TaxComputer,
                          private val cacheSize:                   Long,
                          meterRegistry: MeterRegistry) {
 
+  private val maximumIncome     = 1_000_000
+  private val incomeGranularity = 10_000
+  private val taxableIncomeTenThousands: List<Counter> = (0..maximumIncome step incomeGranularity).map {
+    Counter
+      .builder("metrics_demo.taxable_income.ten_thousands")
+      .description("distribution of taxable incomes in steps of ten-thousand")
+      .tag("ten_thousands", it.toString())
+      .register(meterRegistry)
+  }
+
   private val cache: LoadingCache<Euro, TaxComputationResult> = CacheBuilder.newBuilder()
     .maximumSize(cacheSize)
     .build(object: CacheLoader<Euro, TaxComputationResult>() {
@@ -42,6 +52,8 @@ class CachingTaxComputer(private val taxComputer:                 TaxComputer,
 
   fun computeTax(taxableIncome: Euro): TaxComputationResult {
     taxComputerCounter.increment()
+    val bucketIndex = (taxableIncome / incomeGranularity).coerceAtMost(taxableIncomeTenThousands.size - 1)
+    taxableIncomeTenThousands[bucketIndex].increment()
     return cache[taxableIncome]
   }
 

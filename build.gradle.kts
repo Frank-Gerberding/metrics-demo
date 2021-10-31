@@ -24,9 +24,16 @@ dependencies {
   implementation    (group = "org.jetbrains.kotlin",         name = "kotlin-reflect")
   implementation    (group = "org.jetbrains.kotlin",         name = "kotlin-stdlib-jdk8")
   implementation    (group = "com.google.guava",             name = "guava", version = "31.0.1-jre")
+  implementation    (group = "org.springframework.cloud",    name = "spring-cloud-starter-consul-all")
   developmentOnly   (group = "org.springframework.boot",     name = "spring-boot-devtools")
   runtimeOnly       (group = "io.micrometer",                name = "micrometer-registry-prometheus")
   testImplementation(group = "org.springframework.boot",     name = "spring-boot-starter-test")
+}
+
+dependencyManagement {
+  imports {
+    mavenBom("org.springframework.cloud:spring-cloud-dependencies:2020.0.3")
+  }
 }
 
 tasks.withType<KotlinCompile> {
