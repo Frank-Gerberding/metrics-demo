@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 9,
-  "iteration": 1635701848559,
+  "iteration": 1635771713321,
   "links": [],
   "panels": [
     {
@@ -364,7 +364,7 @@
     },
     {
       "cards": {
-        "cardPadding": null,
+        "cardPadding": 0.2,
         "cardRound": null
       },
       "color": {
@@ -437,7 +437,7 @@
       "yBucketSize": null
     }
   ],
-  "refresh": "10s",
+  "refresh": false,
   "schemaVersion": 27,
   "style": "dark",
   "tags": [],
@@ -488,8 +488,8 @@
     ]
   },
   "time": {
-    "from": "now-15m",
-    "to": "now"
+    "from": "2021-11-01T14:26:40.945Z",
+    "to": "2021-11-01T14:54:24.043Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -508,5 +508,5 @@
   "timezone": "",
   "title": "Metrics Demo",
   "uid": "pvnzapK7z",
-  "version": 25
+  "version": 27
 }
