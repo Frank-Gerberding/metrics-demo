@@ -22,7 +22,7 @@ class CachingTaxComputer(private val taxComputer:                 TaxComputer,
                          private val cacheSize:                   Long,
                          meterRegistry: MeterRegistry) {
 
-  private val maximumIncome     = 1_000_000
+  private val maximumIncome     = 300_000
   private val incomeGranularity = 10_000
   private val taxableIncomeTenThousands: List<Counter> = (0..maximumIncome step incomeGranularity).map {
     Counter
