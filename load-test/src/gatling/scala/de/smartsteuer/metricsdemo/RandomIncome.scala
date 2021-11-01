@@ -1,5 +1,7 @@
 package de.smartsteuer.metricsdemo
 
+import java.time.temporal.{ChronoField, Temporal, TemporalAdjuster}
+import java.time.{Duration, LocalDateTime}
 import scala.collection.mutable.ArrayBuffer
 import scala.util.Random
 
@@ -33,11 +35,22 @@ object RandomIncome {
     () => buckets(Random.nextInt(buckets.size))
   }
 
-  private val scale         = 1_000.0
-  private val minimumIncome = 5_000.0
-  private val maximumIncome = 200_000.0
+  def midnight(): TemporalAdjuster = (temporal: Temporal) => temporal.`with`(ChronoField.NANO_OF_DAY, 0)
+
+  private val scale                = 1_000.0
+  private val minimumIncome        = 5_000.0
+  private val minimumMaximumIncome = 100_000.0
+  private val maximumMaximumIncome = 300_000.0
+  private val secondsPerDay        = Duration.ofDays(1).getSeconds
   private def normalizedRandomFunction: () => Double = createNormalizedRandomFunction()
-  private def randomIncomeFunction(): Int = (((maximumIncome - minimumIncome) / scale * normalizedRandomFunction()).toInt * scale + minimumIncome).toInt
+  private def randomIncomeFunction(): Int = {
+    val now = LocalDateTime.now()
+    val secondsSinceMidnight = now.getSecond - now.`with`(midnight()).getSecond
+    val dayFraction = secondsSinceMidnight.toDouble / secondsPerDay.toDouble
+    val factor = (Math.sin(dayFraction * Math.PI * 7) + 1.0) / 2.0
+    val maximumIncome = (maximumMaximumIncome - minimumMaximumIncome) * factor + minimumMaximumIncome
+    (((maximumIncome - minimumIncome) / scale * normalizedRandomFunction()).toInt * scale + minimumIncome).toInt
+  }
 
   val feeder: Iterator[Map[String, Int]] =
     Iterator.continually(Map("income" -> randomIncomeFunction()))
