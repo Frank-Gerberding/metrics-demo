@@ -27,7 +27,14 @@ dependencies {
   implementation    (group = "org.springframework.cloud",    name = "spring-cloud-starter-consul-all")
   developmentOnly   (group = "org.springframework.boot",     name = "spring-boot-devtools")
   runtimeOnly       (group = "io.micrometer",                name = "micrometer-registry-prometheus")
-  testImplementation(group = "org.springframework.boot",     name = "spring-boot-starter-test")
+  testImplementation(group = "org.springframework.boot",     name = "spring-boot-starter-test") {
+    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    exclude(module = "mockito-core")
+  }
+  testImplementation(group = "com.ninja-squad",              name = "springmockk", version = "3.0.1")
+  testImplementation(group  = "io.kotest",                   name = "kotest-assertions-core-jvm",  version = "4.6.3") {
+    exclude(group = "org.jetbrains.kotlin", module = "kotlin-reflect")
+  }
 }
 
 dependencyManagement {
